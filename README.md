@@ -80,6 +80,15 @@ Pour l'activer : **Settings → Pages → Build and deployment → Source : GitH
 
 Les contributions sont les bienvenues ! Voir [CONTRIBUTING.md](CONTRIBUTING.md). Pas d'étape de *build*, pas de `npm install` : du HTML / CSS / JavaScript simple.
 
+## 🙏 Inspirations & remerciements
+
+Ce projet s'inspire de certaines fonctionnalités de deux outils de l'écosystème éducatif, que je remercie :
+
+- [CartesMD](https://cartesmd.forge.apps.education.fr/)
+- [FlashMD](https://flashmd.forge.apps.education.fr/)
+
+Ils ne répondaient pas entièrement à mon besoin — en particulier l'impression au **format carte à collectionner (63 × 88 mm)**, en **recto-verso calibré** — mais ils ont assurément nourri la réflexion et inspiré l'approche de JCC-FlashCard.
+
 ## 📄 Licence
 
 [MIT](LICENSE). Librairies tierces embarquées : [marked](https://marked.js.org/) (MIT) et [DOMPurify](https://github.com/cure53/DOMPurify) (Apache-2.0 / MPL-2.0).

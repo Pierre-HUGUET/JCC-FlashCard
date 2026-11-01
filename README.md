@@ -11,13 +11,14 @@ Gratuit, open-source, 100 % dans le navigateur — aucune donnée n'est envoyée
 
 ---
 
-## ✨ Fonctionnalités (v0.2)
+## ✨ Fonctionnalités (v0.3)
 
 - **Structure de carte** inspirée des cartes à jouer : bandeau **QUESTION / RÉPONSE**, **index** en haut à droite (difficulté, importance, n° de paquet…) et **catégorie** (discipline, chapitre…) au recto.
 - Éditeur **recto / verso** avec **Markdown** (gras, italique, titres, listes, liens, images) et **aperçu en direct**.
 - Cartes au **vrai format 63 × 88 mm**.
-- Réglages de **couleurs** (bordure, fond, texte), **épaisseur de bordure** et **police**, au niveau du deck ou par carte.
+- Réglages de **couleurs** (bordure, fond, texte), **épaisseur de bordure**, **police** et **taille du texte / de la catégorie**, au niveau du deck ou par carte.
 - **Impression recto-verso** : grille 3 × 3 sur A4, **dos automatiquement inversés en miroir** pour un alignement correct.
+- **Calibration recto-verso** : réglage fin (0,1 mm) du décalage du verso, avec une **mire de calibration** à imprimer et lire par transparence.
 - Sauvegarde dans un **fichier JSON** autonome (portable, éditable à la main, générable par IA) + **sauvegarde automatique locale**.
 
 Suite prévue (voir le [cahier des charges](CAHIER-DES-CHARGES.md)) : export **PDF téléchargeable**, insertion d'images depuis le disque, repères de découpe, gabarits, et assistance **IA**.

@@ -621,6 +621,75 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Mire de calibration recto-verso (lecture par transparence)
+  // ---------------------------------------------------------------------------
+  const CENTER = { x: 105, y: 148.5 }; // centre d'une page A4, en mm
+
+  function calibRulerSVG() {
+    // Règle horizontale (graduations vers le haut, chiffres dessous) et règle
+    // verticale (graduations vers la droite, chiffres à gauche), de -10 à +10 mm.
+    let s =
+      '<line x1="' + (CENTER.x - 11) + '" y1="' + CENTER.y + '" x2="' + (CENTER.x + 11) + '" y2="' + CENTER.y + '" stroke="#1565c0" stroke-width="0.15"/>' +
+      '<line x1="' + CENTER.x + '" y1="' + (CENTER.y - 11) + '" x2="' + CENTER.x + '" y2="' + (CENTER.y + 11) + '" stroke="#1565c0" stroke-width="0.15"/>';
+    for (let h = -20; h <= 20; h++) {
+      const mm = h / 2;
+      const major = h % 4 === 0; // chiffré tous les 2 mm
+      const whole = h % 2 === 0; // millimètres entiers
+      const len = h === 0 ? 9 : major ? 5 : whole ? 3 : 1.5;
+      const w = h === 0 ? 0.5 : major ? 0.35 : 0.2;
+      const x = CENTER.x + mm;
+      const y = CENTER.y + mm;
+      s += '<line x1="' + x + '" y1="' + (CENTER.y - len) + '" x2="' + x + '" y2="' + CENTER.y + '" stroke="#1565c0" stroke-width="' + w + '"/>';
+      s += '<line x1="' + CENTER.x + '" y1="' + y + '" x2="' + (CENTER.x + len) + '" y2="' + y + '" stroke="#1565c0" stroke-width="' + w + '"/>';
+      if (major && h !== 0) {
+        const lab = Math.abs(mm); // le signe se lit par la position (gauche/droite, haut/bas du 0)
+        s += '<text x="' + x + '" y="' + (CENTER.y + 5) + '" font-size="2.4" text-anchor="middle" fill="#1565c0">' + lab + '</text>';
+        s += '<text x="' + (CENTER.x - 3) + '" y="' + (y + 0.9) + '" font-size="2.4" text-anchor="end" fill="#1565c0">' + lab + '</text>';
+      }
+    }
+    return s;
+  }
+
+  function buildCalibration() {
+    const p = state.deck.print || {};
+    const dx = p.backOffsetX || 0;
+    const dy = p.backOffsetY || 0;
+    const open = '<svg width="210mm" height="297mm" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">';
+
+    const recto =
+      open +
+      '<text x="105" y="16" font-size="6" text-anchor="middle" fill="#111">MIRE DE CALIBRATION — RECTO</text>' +
+      '<line x1="105" y1="93.5" x2="105" y2="203.5" stroke="#c62828" stroke-width="0.3"/>' +
+      '<line x1="20" y1="148.5" x2="190" y2="148.5" stroke="#c62828" stroke-width="0.3"/>' +
+      '<circle cx="105" cy="148.5" r="2.4" fill="none" stroke="#c62828" stroke-width="0.4"/>' +
+      '<text x="105" y="270" font-size="3.5" text-anchor="middle" fill="#111">1. Imprimez en recto-verso (retournement sur le grand côté).</text>' +
+      '<text x="105" y="276" font-size="3.5" text-anchor="middle" fill="#111">2. Regardez la feuille par transparence, devant une source de lumière.</text>' +
+      '<text x="105" y="282" font-size="3.5" text-anchor="middle" fill="#111">3. La croix rouge (recto) doit tomber sur le 0 des règles bleues (verso).</text>' +
+      '</svg>';
+
+    const verso =
+      open +
+      '<text x="105" y="16" font-size="6" text-anchor="middle" fill="#111">MIRE DE CALIBRATION — VERSO</text>' +
+      '<g transform="translate(' + dx + ' ' + dy + ')">' +
+      calibRulerSVG() +
+      '</g>' +
+      '<text x="105" y="264" font-size="3.5" text-anchor="middle" fill="#111">Réglez « Décalage horizontal / vertical du verso » pour amener la croix sur le 0, puis réimprimez.</text>' +
+      '<text x="105" y="270" font-size="3.5" text-anchor="middle" fill="#111">1 graduation = 1 mm · graduation chiffrée = 2 mm.</text>' +
+      '<text x="105" y="276" font-size="3.5" text-anchor="middle" fill="#111">Décalage actuel du verso : ' + dx + ' mm (H) · ' + dy + ' mm (V).</text>' +
+      '<text x="105" y="282" font-size="3.5" text-anchor="middle" fill="#111">Si l’écart augmente après réglage, inversez le signe.</text>' +
+      '</svg>';
+
+    const root = $('#print-root');
+    root.innerHTML = '';
+    const pr = el('div', { class: 'print-page' });
+    pr.innerHTML = recto;
+    const pv = el('div', { class: 'print-page' });
+    pv.innerHTML = verso;
+    root.appendChild(pr);
+    root.appendChild(pv);
+  }
+
+  // ---------------------------------------------------------------------------
   // Rendu global + initialisation
   // ---------------------------------------------------------------------------
   function renderAll() {
@@ -653,6 +722,10 @@
     });
     $('#btn-print').addEventListener('click', () => {
       buildPrint();
+      window.print();
+    });
+    $('#btn-calib').addEventListener('click', () => {
+      buildCalibration();
       window.print();
     });
 

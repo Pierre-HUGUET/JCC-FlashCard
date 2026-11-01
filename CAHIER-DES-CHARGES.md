@@ -92,7 +92,7 @@ C'est le vrai défi : le **dos doit tomber pile derrière le recto**.
 - Génération de **pages de recto** puis de **pages de dos** correspondantes.
 - La grille des dos est **inversée horizontalement** (effet miroir) pour que chaque dos se place derrière son recto après retournement de la feuille.
 - Choix du **bord de retournement** (grand côté / petit côté), car il change le sens du miroir. L'option par défaut suivra le réglage le plus courant des imprimantes.
-- **Page de calibration / test** fournie : imprimer une feuille test pour vérifier l'alignement avant de lancer un gros tirage.
+- **Page de calibration / test** fournie : imprimer une feuille test pour vérifier l'alignement avant de lancer un gros tirage. *(Implémenté : deux décalages du verso réglables au 1/10 de mm, et une **mire de calibration** — bouton « Mire de calibration » — à lire par transparence pour mesurer puis annuler le désalignement.)*
 
 > ✅ **Validé par ton exemple :** le deck « Thème 1 » applique déjà ce miroir horizontal (retournement sur le grand côté — les colonnes s'inversent à chaque rangée). Le générateur l'automatisera. Voir §15.
 

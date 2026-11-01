@@ -1,0 +1,221 @@
+/* =========================================================================
+   JCC-FlashCard — feuille de style
+   ========================================================================= */
+
+:root {
+  --accent: #4f46e5;
+  --accent-dark: #4338ca;
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --ink: #1f2430;
+  --muted: #6b7280;
+  --border: #e2e4e9;
+  --danger: #c62828;
+  --radius: 10px;
+  --card-w: 63mm;
+  --card-h: 88mm;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+/* ---------- Barre supérieure ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.brand { font-size: 1.15rem; font-weight: 700; letter-spacing: 0.2px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  padding: 7px 12px;
+  border-radius: 8px;
+  transition: background 0.12s, border-color 0.12s;
+}
+button:hover { background: #f3f4f6; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { background: var(--accent-dark); }
+button.small { padding: 4px 10px; font-size: 0.9rem; }
+
+/* ---------- Disposition générale ---------- */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.sidebar { flex: 0 0 320px; display: flex; flex-direction: column; gap: 16px; }
+.editor { flex: 1 1 auto; min-width: 0; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.panel h2 { margin: 0 0 10px; font-size: 1rem; }
+.panel h2 small { color: var(--muted); font-weight: 400; }
+
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.field > span { font-size: 0.82rem; color: var(--muted); }
+input[type="text"], textarea, select {
+  font: inherit;
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+textarea { resize: vertical; }
+
+/* ---------- Contrôles de style ---------- */
+.deck-style-box, .card-style { margin-top: 6px; }
+summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; padding: 4px 0; }
+.style-grid { display: grid; gap: 8px; margin-top: 8px; }
+.row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.row > span { font-size: 0.85rem; color: var(--muted); }
+.row input[type="color"] { width: 42px; height: 28px; padding: 0; border-radius: 6px; }
+.row input[type="range"] { flex: 1; }
+.range-val { font-size: 0.8rem; color: var(--muted); min-width: 44px; text-align: right; }
+
+/* ---------- Liste des cartes ---------- */
+.cards-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.card-list { list-style: none; margin: 0; padding: 0; max-height: 46vh; overflow: auto; }
+.card-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.card-item:hover { background: #f3f4f6; }
+.card-item.selected { background: #eef0fe; border-color: #c7cbf5; }
+.ci-index { color: var(--muted); font-size: 0.8rem; min-width: 20px; }
+.ci-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
+.ci-tools { display: flex; gap: 2px; opacity: 0.35; transition: opacity 0.12s; }
+.card-item:hover .ci-tools, .card-item.selected .ci-tools { opacity: 1; }
+button.icon { padding: 2px 6px; border-color: transparent; background: transparent; line-height: 1; }
+button.icon:hover { background: #e5e7eb; }
+button.icon.danger:hover { background: #fde0e0; color: var(--danger); }
+
+/* ---------- Éditeur de carte ---------- */
+.faces-wrap { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.faces { flex: 1 1 320px; display: flex; flex-direction: column; gap: 14px; min-width: 260px; }
+.previews { flex: 0 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+.face-edit { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.face-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.face-head h3 { margin: 0; font-size: 0.95rem; }
+.md-input { min-height: 120px; font-family: ui-monospace, Consolas, monospace; font-size: 0.9rem; }
+
+.md-toolbar { display: flex; gap: 2px; }
+.md-btn { padding: 3px 8px; font-size: 0.85rem; min-width: 28px; }
+.md-btn:nth-child(1) { font-weight: 800; }
+.md-btn:nth-child(2) { font-style: italic; }
+
+.preview-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.preview-label { font-size: 0.78rem; color: var(--muted); }
+
+.card-style { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-top: 16px; }
+
+.empty { color: var(--muted); }
+
+/* ---------- La carte (aperçu + impression) ---------- */
+.card {
+  width: var(--card-w);
+  height: var(--card-h);
+  background: var(--border-color, #c62828);
+  padding: var(--border-width, 3mm);
+  border-radius: 3mm;
+  overflow: hidden;
+}
+.card-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--bg, #fff);
+  color: var(--text, #111);
+  font-family: var(--font, inherit);
+  border-radius: 2mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4mm;
+  overflow: hidden;
+  font-size: 5mm;
+  line-height: 1.25;
+  word-break: break-word;
+}
+.card-inner > :first-child { margin-top: 0; }
+.card-inner > :last-child { margin-bottom: 0; }
+.card-inner p { margin: 0.25em 0; }
+.card-inner h1, .card-inner h2, .card-inner h3 { margin: 0.2em 0; line-height: 1.1; }
+.card-inner ul, .card-inner ol { margin: 0.2em 0; padding-left: 1.2em; text-align: left; }
+.card-inner img { max-width: 100%; max-height: 60mm; object-fit: contain; }
+
+/* Ombre uniquement pour les aperçus à l'écran (jamais à l'impression). */
+.preview-col .card { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); }
+
+/* ---------- Impression ---------- */
+#print-root { display: none; }
+
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff; }
+  .topbar, .layout, #file-input { display: none !important; }
+  #print-root { display: block !important; }
+
+  .print-page {
+    width: 210mm;
+    height: 297mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+  .print-page:last-child { page-break-after: auto; break-after: auto; }
+
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 63mm);
+    grid-auto-rows: 88mm;
+    gap: 0;
+  }
+  .print-empty { width: 63mm; height: 88mm; }
+
+  .card { box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .layout { flex-direction: column; }
+  .sidebar { flex: 1 1 auto; width: 100%; }
+}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JCC-FlashCard — éditeur de flashcards format carte</title>
+  <meta name="description" content="Créez des flashcards à imprimer au format carte à collectionner (63 × 88 mm), recto-verso. 100 % navigateur, gratuit, open-source." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🃏 JCC-FlashCard</div>
+    <nav class="actions">
+      <button id="btn-new" type="button">Nouveau</button>
+      <button id="btn-open" type="button">Ouvrir…</button>
+      <button id="btn-save" type="button">Enregistrer&nbsp;(.json)</button>
+      <button id="btn-example" type="button">Exemple</button>
+      <button id="btn-print" type="button" class="primary">Imprimer / PDF</button>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>Deck</h2>
+        <label class="field"><span>Titre</span><input id="deck-title" type="text" /></label>
+        <label class="field"><span>Description</span><textarea id="deck-desc" rows="2"></textarea></label>
+        <details class="deck-style-box" open>
+          <summary>Style par défaut</summary>
+          <div id="deck-style"></div>
+        </details>
+      </section>
+
+      <section class="panel cards-panel">
+        <div class="cards-head">
+          <h2>Cartes <small id="card-count"></small></h2>
+          <button id="btn-add-card" type="button" class="primary small">+ Ajouter</button>
+        </div>
+        <ul id="card-list" class="card-list"></ul>
+      </section>
+    </aside>
+
+    <section id="editor" class="editor"></section>
+  </main>
+
+  <!-- Zone d'impression (visible uniquement à l'impression) -->
+  <div id="print-root" aria-hidden="true"></div>
+
+  <input type="file" id="file-input" accept="application/json,.json" hidden />
+
+  <!-- Librairies tierces (vendored, MIT / Apache) -->
+  <script src="vendor/purify.min.js"></script>
+  <script src="vendor/marked.min.js"></script>
+  <!-- Deck d'exemple + application -->
+  <script src="js/example-deck.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

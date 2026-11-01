@@ -1,0 +1,13 @@
+# Système
+.DS_Store
+Thumbs.db
+
+# Logs / temporaire
+*.log
+tmp/
+
+# Outils / éditeurs
+.claude/
+.vscode/
+.idea/
+node_modules/

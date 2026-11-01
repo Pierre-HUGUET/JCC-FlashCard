@@ -194,7 +194,7 @@ button.icon.danger:hover { background: #fde0e0; color: var(--danger); }
   border-radius: 999px;
   padding: 0.6mm 3mm;
   margin-bottom: 2mm;
-  font-size: 3mm;
+  font-size: var(--cat-size, 3mm);
   font-weight: 600;
   max-width: 100%;
   text-align: center;
@@ -207,7 +207,7 @@ button.icon.danger:hover { background: #fde0e0; color: var(--danger); }
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 5mm;
+  font-size: var(--body-size, 5mm);
   line-height: 1.25;
   overflow: hidden;
   word-break: break-word;

@@ -47,6 +47,8 @@
         backgroundColor: '#ffffff',
         textColor: '#111111',
         fontFamily: 'manuscrite',
+        bodyFontSize: 5, // en mm (texte du corps)
+        categoryFontSize: 3, // en mm (pastille catégorie)
       },
     };
   }
@@ -135,6 +137,8 @@
     node.style.setProperty('--bg', st.backgroundColor);
     node.style.setProperty('--text', st.textColor);
     node.style.setProperty('--font', FONT_STACKS[st.fontFamily] || FONT_STACKS.sans);
+    node.style.setProperty('--body-size', (st.bodyFontSize ?? 5) + 'mm');
+    node.style.setProperty('--cat-size', (st.categoryFontSize ?? 3) + 'mm');
   }
 
   function deckLabel(side) {
@@ -384,19 +388,24 @@
       input.addEventListener('input', () => { styleObj[prop] = input.value; onChange(); });
       return el('label', { class: 'row' }, [el('span', { text: labelTxt }), input]);
     };
+    // Curseur générique en millimètres
+    const mmRange = (labelTxt, prop, def, min, max) => {
+      const range = el('input', { type: 'range', min: String(min), max: String(max), step: '0.5', value: String(styleObj[prop] ?? def) });
+      const out = el('span', { class: 'range-val', text: (styleObj[prop] ?? def) + ' mm' });
+      range.addEventListener('input', () => {
+        styleObj[prop] = parseFloat(range.value);
+        out.textContent = styleObj[prop] + ' mm';
+        onChange();
+      });
+      return el('label', { class: 'row' }, [el('span', { text: labelTxt }), range, out]);
+    };
+
     wrap.appendChild(colorRow('Bordure', 'borderColor'));
     wrap.appendChild(colorRow('Fond', 'backgroundColor'));
     wrap.appendChild(colorRow('Texte', 'textColor'));
-
-    // Épaisseur de bordure (mm)
-    const range = el('input', { type: 'range', min: '0', max: '6', step: '0.5', value: String(styleObj.borderWidth ?? 3) });
-    const out = el('span', { class: 'range-val', text: (styleObj.borderWidth ?? 3) + ' mm' });
-    range.addEventListener('input', () => {
-      styleObj.borderWidth = parseFloat(range.value);
-      out.textContent = styleObj.borderWidth + ' mm';
-      onChange();
-    });
-    wrap.appendChild(el('label', { class: 'row' }, [el('span', { text: 'Épaisseur' }), range, out]));
+    wrap.appendChild(mmRange('Épaisseur bordure', 'borderWidth', 3, 0, 6));
+    wrap.appendChild(mmRange('Taille du texte', 'bodyFontSize', 5, 3, 10));
+    wrap.appendChild(mmRange('Taille catégorie', 'categoryFontSize', 3, 2, 8));
 
     // Police
     const sel = el('select');

@@ -248,20 +248,22 @@ button.icon.danger:hover { background: #fde0e0; color: var(--danger); }
   .print-page {
     width: 210mm;
     height: 297mm;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     page-break-after: always;
     break-after: page;
-    overflow: hidden;
   }
   .print-page:last-child { page-break-after: auto; break-after: auto; }
 
+  /* La grille occupe toute la page (comme la mire) et centre ses cartes :
+     même structure que la mire, qui s'imprime sans page blanche. */
   .print-grid {
+    width: 210mm;
+    height: 297mm;
     display: grid;
     grid-template-columns: repeat(3, 63mm);
     grid-auto-rows: 88mm;
     gap: 0;
+    place-content: center;
   }
   .print-empty { width: 63mm; height: 88mm; }
 

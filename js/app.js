@@ -116,7 +116,12 @@
   // Rendu Markdown (sécurisé)
   // ---------------------------------------------------------------------------
   function renderMarkdown(md) {
-    const raw = window.marked.parse(md || '', { breaks: true, gfm: true });
+    // Markdown fusionne les lignes vides multiples. Pour permettre d'espacer
+    // verticalement en appuyant plusieurs fois sur Entrée, on convertit chaque
+    // ligne vide « en trop » (au-delà du simple saut de paragraphe) en un
+    // paragraphe « espace insécable ».
+    const prepared = (md || '').replace(/\n{3,}/g, (m) => '\n\n' + '&nbsp;\n\n'.repeat(m.length - 2));
+    const raw = window.marked.parse(prepared, { breaks: true, gfm: true });
     return window.DOMPurify.sanitize(raw);
   }
 

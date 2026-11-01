@@ -41,6 +41,7 @@
       title: 'Mon deck',
       description: '',
       labels: { front: 'QUESTION', back: 'RÉPONSE' },
+      print: { backOffsetX: 0, backOffsetY: 0 }, // calibration recto-verso, en mm
       defaults: {
         borderColor: '#c62828',
         borderWidth: 3, // en mm
@@ -434,6 +435,8 @@
     $('#deck-desc').value = state.deck.description;
     $('#deck-label-front').value = (state.deck.labels && state.deck.labels.front) || 'QUESTION';
     $('#deck-label-back').value = (state.deck.labels && state.deck.labels.back) || 'RÉPONSE';
+    $('#print-offset-x').value = (state.deck.print && state.deck.print.backOffsetX) || 0;
+    $('#print-offset-y').value = (state.deck.print && state.deck.print.backOffsetY) || 0;
     const holder = $('#deck-style');
     holder.innerHTML = '';
     holder.appendChild(
@@ -517,6 +520,7 @@
     state.deck = Object.assign(newDeck(), doc.deck || {});
     state.deck.defaults = Object.assign(newDeck().defaults, (doc.deck && doc.deck.defaults) || {});
     state.deck.labels = Object.assign(newDeck().labels, (doc.deck && doc.deck.labels) || {});
+    state.deck.print = Object.assign(newDeck().print, (doc.deck && doc.deck.print) || {});
     state.cards = doc.cards.map((c) => ({
       id: c.id || uid(),
       index: c.index || '',
@@ -596,6 +600,13 @@
       if (!card) grid.appendChild(el('div', { class: 'print-empty' }));
       else grid.appendChild(buildFullCard(card, side));
     });
+    // Calibration : on décale le verso pour compenser un désalignement d'impression.
+    if (side === 'back') {
+      const p = state.deck.print || {};
+      const dx = p.backOffsetX || 0;
+      const dy = p.backOffsetY || 0;
+      if (dx || dy) grid.style.transform = 'translate(' + dx + 'mm, ' + dy + 'mm)';
+    }
     return el('div', { class: 'print-page' }, [grid]);
   }
 
@@ -649,6 +660,8 @@
     $('#deck-desc').addEventListener('input', (e) => { state.deck.description = e.target.value; scheduleAutosave(); });
     $('#deck-label-front').addEventListener('input', (e) => { state.deck.labels.front = e.target.value; renderPreviews(); scheduleAutosave(); });
     $('#deck-label-back').addEventListener('input', (e) => { state.deck.labels.back = e.target.value; renderPreviews(); scheduleAutosave(); });
+    $('#print-offset-x').addEventListener('input', (e) => { state.deck.print.backOffsetX = parseFloat(e.target.value) || 0; scheduleAutosave(); });
+    $('#print-offset-y').addEventListener('input', (e) => { state.deck.print.backOffsetY = parseFloat(e.target.value) || 0; scheduleAutosave(); });
   }
 
   function init() {

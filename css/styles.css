@@ -82,6 +82,7 @@ button.small { padding: 4px 10px; font-size: 0.9rem; }
 
 .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
 .field > span { font-size: 0.82rem; color: var(--muted); }
+.hint { font-size: 0.8rem; color: var(--muted); margin: 6px 0 10px; line-height: 1.35; }
 input[type="text"], textarea, select {
   font: inherit;
   width: 100%;

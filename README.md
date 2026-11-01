@@ -37,10 +37,13 @@ Puis ouvrez `http://localhost:8000` dans votre navigateur.
 ## 🖨️ Imprimer en recto-verso
 
 1. Cliquez sur **Imprimer / PDF**.
-2. Dans la boîte d'impression, choisissez **Recto-verso** et, pour le retournement, **sur le grand côté** (*flip on long edge*).
-3. Pour obtenir un fichier PDF, choisissez **« Enregistrer au format PDF »** comme destination.
+2. Réglez **Marges : Aucune** et **Échelle : 100 % (taille réelle)** — indispensable pour garder le format exact 63 × 88 mm et éviter une page blanche entre chaque feuille.
+3. Choisissez **Recto-verso** et, pour le retournement, **sur le grand côté** (*flip on long edge*).
+4. Pour obtenir un fichier PDF, choisissez **« Enregistrer au format PDF »** comme destination.
 
 L'application génère une page de **rectos** puis une page de **dos en miroir** : chaque réponse tombe ainsi derrière sa question. Faites d'abord un test sur une feuille avant un gros tirage.
+
+Besoin d'aligner finement le recto et le verso ? Utilisez le bouton **Mire de calibration**, à imprimer et lire par transparence, puis ajustez les décalages du verso dans *Deck → Calibration recto-verso*.
 
 ## 💾 Format de fichier
 

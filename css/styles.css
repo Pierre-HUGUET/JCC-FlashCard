@@ -241,9 +241,9 @@ button.icon.danger:hover { background: #fde0e0; color: var(--danger); }
 
 @media print {
   @page { size: A4; margin: 0; }
-  html, body { background: #fff; }
+  html, body { background: #fff; margin: 0; padding: 0; }
   .topbar, .layout, #file-input { display: none !important; }
-  #print-root { display: block !important; }
+  #print-root { display: block !important; margin: 0; padding: 0; }
 
   .print-page {
     width: 210mm;

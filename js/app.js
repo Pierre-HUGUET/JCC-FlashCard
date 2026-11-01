@@ -643,8 +643,8 @@
       s += '<line x1="' + CENTER.x + '" y1="' + y + '" x2="' + (CENTER.x + len) + '" y2="' + y + '" stroke="#1565c0" stroke-width="' + w + '"/>';
       if (major && h !== 0) {
         const lab = Math.abs(mm); // le signe se lit par la position (gauche/droite, haut/bas du 0)
-        s += '<text x="' + x + '" y="' + (CENTER.y + 5) + '" font-size="2.4" text-anchor="middle" fill="#1565c0">' + lab + '</text>';
-        s += '<text x="' + (CENTER.x - 3) + '" y="' + (y + 0.9) + '" font-size="2.4" text-anchor="end" fill="#1565c0">' + lab + '</text>';
+        s += '<text x="' + x + '" y="' + (CENTER.y + 4.3) + '" font-size="1.9" text-anchor="middle" fill="#1565c0">' + lab + '</text>';
+        s += '<text x="' + (CENTER.x - 2.4) + '" y="' + (y + 0.7) + '" font-size="1.9" text-anchor="end" fill="#1565c0">' + lab + '</text>';
       }
     }
     return s;

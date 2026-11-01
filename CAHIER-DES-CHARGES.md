@@ -152,23 +152,25 @@ Schéma indicatif (v1, à affiner) :
 
 ```json
 {
-  "format": "pokeflashcard",
-  "version": 1,
+  "format": "jcc-flashcard",
+  "version": 2,
   "deck": {
     "title": "Tables de multiplication",
     "description": "Révisions CE2",
-    "createdAt": "2026-11-01T10:00:00Z",
-    "updatedAt": "2026-11-01T10:00:00Z",
+    "labels": { "front": "QUESTION", "back": "RÉPONSE" },
     "defaults": {
       "borderColor": "#2e7d32",
-      "borderWidth": 4,
+      "borderWidth": 3,
       "backgroundColor": "#ffffff",
-      "textColor": "#111111"
+      "textColor": "#111111",
+      "fontFamily": "manuscrite"
     }
   },
   "cards": [
     {
       "id": "c1",
+      "index": "A1",
+      "category": "Table de 7",
       "front": { "markdown": "7 × 8 = ?" },
       "back": { "markdown": "**56**" },
       "tags": ["tables", "x7"],
@@ -184,6 +186,7 @@ Schéma indicatif (v1, à affiner) :
 **Décisions de conception :**
 - **Images intégrées en base64** dans `assets`, référencées depuis le Markdown. → fichier unique et portable (contrepartie : taille du fichier ; on documentera des conseils de poids d'image).
 - `style` par carte surcharge `deck.defaults`.
+- **Format v2** : `deck.labels` (libellés recto/verso, défaut QUESTION/RÉPONSE) ; `card.index` (texte court, recto) et `card.category` (texte libre, recto). Les fichiers v1 (sans ces champs) restent lisibles : les champs manquants prennent leurs valeurs par défaut.
 - À l'import : **validation** du fichier (format, version) avec messages d'erreur clairs.
 
 ---
@@ -283,6 +286,11 @@ Tu as fourni un deck d'exemple : dates clés de la Révolution / histoire de Fra
 - un **badge / étiquette** optionnel (« Thème 1 ») ;
 - un **corps** avec le texte, dans une **police lisible** (ici manuscrite) ;
 - une **signature / mention** discrète en pied (« PH-2022 »).
+
+**Statut : anatomie implémentée (v0.2).** L'éditeur produit désormais, par carte : bandeau **QUESTION/RÉPONSE**, **index** (haut droite) et **catégorie** (recto), en plus du corps Markdown ; le verso reste épuré. Une seconde planche pédagogique fournie (« Mrs Favell Lee Mortimer ») détaille l'usage prévu des zones :
+- **couleur** = discipline / difficulté / priorité / période… (à harmoniser entre enseignants) ;
+- **index** = difficulté, importance, n° de paquet ;
+- **catégorie** = discipline, chapitre, thème.
 
 ---
 

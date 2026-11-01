@@ -5,12 +5,15 @@ Gratuit, open-source, 100 % dans le navigateur — aucune donnée n'est envoyée
 
 > **Pourquoi ce format ?** Une carte à collectionner standard mesure **63 × 88 mm**. En produisant vos flashcards à cette taille exacte, vous profitez de tout le matériel déjà existant : pochettes (*sleeves*), classeurs à feuilles perforées, *toploaders*, boîtes de rangement… Vos cartes de révision se rangent et se protègent comme des cartes de jeu.
 
+> **Développement...** Cette application a été vibe-codée à l'aide de l'IA Claude d'Anthropic.
+
 > ⚠️ **Projet indépendant**, **non affilié à Pokémon / Nintendo / The Pokémon Company**. « JCC » signifie *Jeu de Cartes à Collectionner*. Seules les **dimensions** du format sont utilisées ; aucune marque ni illustration tierce n'est fournie.
 
 ---
 
-## ✨ Fonctionnalités (v0.1)
+## ✨ Fonctionnalités (v0.2)
 
+- **Structure de carte** inspirée des cartes à jouer : bandeau **QUESTION / RÉPONSE**, **index** en haut à droite (difficulté, importance, n° de paquet…) et **catégorie** (discipline, chapitre…) au recto.
 - Éditeur **recto / verso** avec **Markdown** (gras, italique, titres, listes, liens, images) et **aperçu en direct**.
 - Cartes au **vrai format 63 × 88 mm**.
 - Réglages de **couleurs** (bordure, fond, texte), **épaisseur de bordure** et **police**, au niveau du deck ou par carte.
@@ -21,7 +24,7 @@ Suite prévue (voir le [cahier des charges](CAHIER-DES-CHARGES.md)) : export **P
 
 ## 🚀 Utiliser l'application
 
-- **En ligne :** https://VOTRE-UTILISATEUR.github.io/JCC-FlashCard/ *(à activer, voir ci-dessous)*
+- **En ligne :** https://pierre-huguet.github.io/JCC-FlashCard/
 - **En local :** cette application a besoin d'être servie par un petit serveur (les navigateurs bloquent certains chargements en `file://`). Depuis le dossier du projet :
 
 ```bash
@@ -45,10 +48,19 @@ Un deck est un simple fichier `.json` autonome. Exemple minimal :
 ```json
 {
   "format": "jcc-flashcard",
-  "version": 1,
-  "deck": { "title": "Mon deck", "defaults": { "borderColor": "#c62828", "borderWidth": 3 } },
+  "version": 2,
+  "deck": {
+    "title": "Mon deck",
+    "labels": { "front": "QUESTION", "back": "RÉPONSE" },
+    "defaults": { "borderColor": "#1565c0", "borderWidth": 3 }
+  },
   "cards": [
-    { "front": { "markdown": "7 × 8 = ?" }, "back": { "markdown": "**56**" } }
+    {
+      "index": "3",
+      "category": "Histoire — 1ère Guerre Mondiale",
+      "front": { "markdown": "Quand et où a eu lieu l'Armistice ?" },
+      "back": { "markdown": "**11 novembre 1918** à Compiègne" }
+    }
   ]
 }
 ```

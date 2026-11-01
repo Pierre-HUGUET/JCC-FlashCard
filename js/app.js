@@ -15,7 +15,7 @@
   // Constantes
   // ---------------------------------------------------------------------------
   const FORMAT_ID = 'jcc-flashcard';
-  const FORMAT_VERSION = 1;
+  const FORMAT_VERSION = 2;
   const STORAGE_KEY = 'jcc-flashcard:autosave:v1';
 
   // Dimensions cibles d'une carte à collectionner standard.
@@ -40,6 +40,7 @@
     return {
       title: 'Mon deck',
       description: '',
+      labels: { front: 'QUESTION', back: 'RÉPONSE' },
       defaults: {
         borderColor: '#c62828',
         borderWidth: 3, // en mm
@@ -51,7 +52,7 @@
   }
 
   function newCard() {
-    return { id: uid(), front: { markdown: '' }, back: { markdown: '' }, style: {}, tags: [] };
+    return { id: uid(), index: '', category: '', front: { markdown: '' }, back: { markdown: '' }, style: {}, tags: [] };
   }
 
   // État applicatif (source de vérité unique).
@@ -131,17 +132,45 @@
     node.style.setProperty('--font', FONT_STACKS[st.fontFamily] || FONT_STACKS.sans);
   }
 
-  function buildCardNode(card, side) {
+  function deckLabel(side) {
+    const l = state.deck.labels || {};
+    return side === 'front' ? (l.front || 'QUESTION') : (l.back || 'RÉPONSE');
+  }
+
+  // Construit une carte complète : en-tête (libellé + index) + catégorie + corps.
+  // L'index et la catégorie n'apparaissent qu'au recto (comme dans l'exemple pédagogique).
+  function buildFullCard(card, side) {
     const card_ = el('div', { class: 'card' });
     applyCardStyle(card_, card);
+
+    const header = el('div', { class: 'card-header' });
+    header.appendChild(el('div', { class: 'card-label', text: deckLabel(side) }));
+    if (side === 'front' && card.index) header.appendChild(el('div', { class: 'card-index', text: card.index }));
+    card_.appendChild(header);
+
     const inner = el('div', { class: 'card-inner' });
-    inner.innerHTML = renderMarkdown(card[side] && card[side].markdown);
+    if (side === 'front' && card.category) inner.appendChild(el('div', { class: 'card-category', text: card.category }));
+    const body = el('div', { class: 'card-body' });
+    body.innerHTML = renderMarkdown(card[side] && card[side].markdown);
+    inner.appendChild(body);
     card_.appendChild(inner);
     return card_;
   }
 
-  // Références vivantes des aperçus (pour les rafraîchir sans tout reconstruire).
-  let previewRefs = [];
+  // Colonnes d'aperçu (recto / verso), reconstruites à la volée à chaque changement.
+  const previewCols = { front: null, back: null };
+  function renderPreviews() {
+    const card = selectedCard();
+    if (!card) return;
+    ['front', 'back'].forEach((side) => {
+      const col = previewCols[side];
+      if (!col) return;
+      const fresh = buildFullCard(card, side);
+      const old = col.querySelector('.card');
+      if (old) col.replaceChild(fresh, old);
+      else col.appendChild(fresh);
+    });
+  }
 
   // ---------------------------------------------------------------------------
   // Barre d'outils Markdown
@@ -205,7 +234,8 @@
   function cardLabel(card, index) {
     const txt = (card.front.markdown || '').replace(/[#*_>`\-]/g, '').trim();
     const firstLine = txt.split('\n').find((l) => l.trim()) || '';
-    return firstLine ? firstLine.slice(0, 40) : 'Carte ' + (index + 1);
+    const base = firstLine ? firstLine.slice(0, 38) : 'Carte ' + (index + 1);
+    return (card.index ? card.index + ' · ' : '') + base;
   }
 
   function renderCardList() {
@@ -241,46 +271,67 @@
       return;
     }
 
+    // --- Repères de hiérarchie (index + catégorie, affichés au recto) ---
+    const idxInput = el('input', { type: 'text', maxlength: '8', placeholder: 'ex. 3, A, B2…' });
+    idxInput.value = card.index || '';
+    idxInput.addEventListener('input', () => {
+      card.index = idxInput.value;
+      renderPreviews();
+      updateListLabel(card);
+      scheduleAutosave();
+    });
+
+    const catInput = el('input', { type: 'text', placeholder: 'ex. Histoire — 1ère Guerre Mondiale' });
+    catInput.value = card.category || '';
+    catInput.addEventListener('input', () => {
+      card.category = catInput.value;
+      renderPreviews();
+      scheduleAutosave();
+    });
+
+    root.appendChild(
+      el('div', { class: 'card-meta' }, [
+        el('label', { class: 'field' }, [el('span', { text: 'Index (recto, en haut à droite)' }), idxInput]),
+        el('label', { class: 'field' }, [el('span', { text: 'Catégorie / discipline / chapitre (recto)' }), catInput]),
+      ])
+    );
+
     // --- Zones d'édition recto / verso + aperçus ---
     const faces = el('div', { class: 'faces' });
     const previews = el('div', { class: 'previews' });
+    previewCols.front = null;
+    previewCols.back = null;
 
-    previewRefs = [];
     [['front', 'Recto'], ['back', 'Verso']].forEach(([side, titre]) => {
       const ta = el('textarea', {
         class: 'md-input',
-        rows: 8,
+        rows: 7,
         placeholder: side === 'front' ? 'Question / recto…' : 'Réponse / verso…',
       });
       ta.value = card[side].markdown || '';
-
-      // Carte d'aperçu : noeuds stables, réutilisés pour la frappe ET les changements de style.
-      const previewCard = el('div', { class: 'card' });
-      applyCardStyle(previewCard, card);
-      const previewInner = el('div', { class: 'card-inner' });
-      previewInner.innerHTML = renderMarkdown(card[side].markdown);
-      previewCard.appendChild(previewInner);
-      previewRefs.push({ side, cardNode: previewCard });
-
       ta.addEventListener('input', () => {
         card[side].markdown = ta.value;
-        previewInner.innerHTML = renderMarkdown(ta.value);
+        renderPreviews();
         if (side === 'front') updateListLabel(card);
         scheduleAutosave();
       });
 
-      const faceBlock = el('div', { class: 'face-edit' }, [
-        el('div', { class: 'face-head' }, [el('h3', { text: titre }), buildToolbar(() => ta)]),
-        ta,
-      ]);
-      faces.appendChild(faceBlock);
-
-      previews.appendChild(
-        el('div', { class: 'preview-col' }, [el('span', { class: 'preview-label', text: 'Aperçu ' + titre.toLowerCase() }), previewCard])
+      faces.appendChild(
+        el('div', { class: 'face-edit' }, [
+          el('div', { class: 'face-head' }, [el('h3', { text: titre }), buildToolbar(() => ta)]),
+          ta,
+        ])
       );
+
+      const col = el('div', { class: 'preview-col' }, [
+        el('span', { class: 'preview-label', text: 'Aperçu ' + titre.toLowerCase() }),
+      ]);
+      previewCols[side] = col;
+      previews.appendChild(col);
     });
 
     root.appendChild(el('div', { class: 'faces-wrap' }, [faces, previews]));
+    renderPreviews();
 
     // --- Style de la carte ---
     root.appendChild(renderCardStyle(card));
@@ -356,11 +407,9 @@
     return wrap;
   }
 
-  // Met à jour le style des aperçus (sans toucher au contenu ni aux références).
+  // Rafraîchit les aperçus (alias de renderPreviews, conservé pour les appels existants).
   function refreshPreviews() {
-    const card = selectedCard();
-    if (!card) return;
-    previewRefs.forEach((ref) => applyCardStyle(ref.cardNode, card));
+    renderPreviews();
   }
 
   // ---------------------------------------------------------------------------
@@ -369,6 +418,8 @@
   function renderDeckPanel() {
     $('#deck-title').value = state.deck.title;
     $('#deck-desc').value = state.deck.description;
+    $('#deck-label-front').value = (state.deck.labels && state.deck.labels.front) || 'QUESTION';
+    $('#deck-label-back').value = (state.deck.labels && state.deck.labels.back) || 'RÉPONSE';
     const holder = $('#deck-style');
     holder.innerHTML = '';
     holder.appendChild(
@@ -451,8 +502,11 @@
     if (!Array.isArray(doc.cards)) throw new Error('Le fichier ne contient pas de liste de cartes.');
     state.deck = Object.assign(newDeck(), doc.deck || {});
     state.deck.defaults = Object.assign(newDeck().defaults, (doc.deck && doc.deck.defaults) || {});
+    state.deck.labels = Object.assign(newDeck().labels, (doc.deck && doc.deck.labels) || {});
     state.cards = doc.cards.map((c) => ({
       id: c.id || uid(),
+      index: c.index || '',
+      category: c.category || '',
       front: { markdown: (c.front && c.front.markdown) || '' },
       back: { markdown: (c.back && c.back.markdown) || '' },
       style: c.style || {},
@@ -526,7 +580,7 @@
     const grid = el('div', { class: 'print-grid' });
     cards.forEach((card) => {
       if (!card) grid.appendChild(el('div', { class: 'print-empty' }));
-      else grid.appendChild(buildCardNode(card, side));
+      else grid.appendChild(buildFullCard(card, side));
     });
     return el('div', { class: 'print-page' }, [grid]);
   }
@@ -579,6 +633,8 @@
 
     $('#deck-title').addEventListener('input', (e) => { state.deck.title = e.target.value; scheduleAutosave(); });
     $('#deck-desc').addEventListener('input', (e) => { state.deck.description = e.target.value; scheduleAutosave(); });
+    $('#deck-label-front').addEventListener('input', (e) => { state.deck.labels.front = e.target.value; renderPreviews(); scheduleAutosave(); });
+    $('#deck-label-back').addEventListener('input', (e) => { state.deck.labels.back = e.target.value; renderPreviews(); scheduleAutosave(); });
   }
 
   function init() {
